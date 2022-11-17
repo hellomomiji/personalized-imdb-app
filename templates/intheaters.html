@@ -1,0 +1,42 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Current In Theathers
+{% endblock %}
+
+{% block main %}
+<div class="row" >
+  <!-- example -->
+  <div class="row">
+    {% if number == 0 %}
+    <h3>Please click Refresh to discover movies in Theathers!</h3>
+    {% else %}
+    <h3>Currently {{ number }} movies in Theathers!</h3>
+    {% endif %}
+    <form action="/intheaters" method="post" > <button class="btn btn-dark">Refresh</button></form>
+  </div>
+
+  <!-- Movies -->
+    {% for movie in movies %}
+    <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-3">
+          <img src="{{ movie['image'] }}" class="card-img" alt="{{ movie['title'] }}">
+        </div>
+        <div class="col-md-9">
+          <div class="card-body">
+            <h5 class="card-title">{{ movie['title'] }}</h5>
+            <p class="card-text">Release State: {{ movie['releaseDate'] }} | Rating: {{ movie['rating'] }}</p>
+            <p class="card-text">Runtime: {{ movie['runtime'] }} | Genres: {{ movie['genres'] }} | Directors: {{ movie['directors'] }}</p>
+            <p class="card-text">Stars: {{ movie['stars'] }} </p>
+            <p class="card-text">Plot: {{ movie['plot'] }}</p>
+            <p class="card-text"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+   </div>
+  
+{% endblock %}

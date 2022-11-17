@@ -1,0 +1,5 @@
+Flask
+Flask-Session
+Jinja2
+requests
+werkzeug

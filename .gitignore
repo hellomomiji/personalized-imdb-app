@@ -1,0 +1,11 @@
+*.csv
+*.json
+data/*
+secrets/*
+key/*
+fig/*
+.vscode/**
+**/.venv
+**/__pycache__
+**/.DS_Store
+.coverage
