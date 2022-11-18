@@ -6,7 +6,39 @@
 
 {% block main %}
 
-<h1>This is function 3 page.</h1>
-<a href="http://">link test</a>
-<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Qui natus voluptatibus quibusdam corporis ad, amet rerum quas incidunt sed totam cum consectetur possimus vero quod harum dicta eum autem, nihil esse molestiae, minus aliquid. Natus sit numquam quisquam qui nulla laboriosam aperiam placeat iure excepturi, voluptatem porro? Temporibus fuga cumque excepturi quia earum aperiam in quas, minus deleniti! Quasi quisquam fugit fuga vero reiciendis porro accusamus nulla non, molestiae, quo, perferendis doloremque odit quod laborum adipisci nobis error ab quis illum commodi nam officia quae dolorum est. Magni dolorem labore doloremque facilis. Expedita impedit a ratione maiores illo dolorum. Culpa.</p>
+{% if not movies %}
+<h3>You haven't add any movie yet. <br>Please explore what's new in theaters!</h3>
+
+{% else %}
+<h1>This is your Watchlist!</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col" class="t-header">Poster</th>
+            <th scope="col" class="t-header">Title</th>
+            <th scope="col" class="t-header">Release Year</th>
+            <th scope="col" class="t-header">Runtime</th>
+            <th scope="col" class="t-header">Rating</th>
+            <th scope="col" class="t-header"></th>
+        </tr>
+    </thead>
+    <tbody class="tbody">
+        {% for movie in movies %}
+        <tr>
+            <th><img class="small-img" src="{{ movie['image'] }}" alt="{{ movie['title'] }}"></th>
+            <th>{{ movie['title'] }}</th>
+            <th>{{ movie['releaseYear'] }}</th>
+            <th>{{ movie['runtime'] }}</th>
+            <th>{{ movie['rating'] }}</th>
+            <form action="" method="post">
+                <input type="hidden" name="title" value="{{ movie['title'] }}">                
+                <th><button type="submit" class="btn btn-outline-dark ">Remove</button></th>
+            </form>
+        </tr>
+        {% endfor %}
+    </tbody>
+
+</table>
+{% endif %}
+
 {% endblock %}

@@ -4,8 +4,9 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.message import render_error, success
-from src.MoiveData import getMoviesInTheatersFromAPI, getMoviesInTheatersFromLocal
+from src.moiveData import getMoviesInTheatersFromAPI, getMoviesInTheatersFromLocal
 from src.db import get_db
+from src.watchlist import getWatchList, addMovie, removeMovie
 
 
 app = Flask(__name__)
@@ -81,21 +82,39 @@ def logout():
 
 @app.route("/intheaters", methods = ['GET','POST'])
 def intheaters():
+    calldate = None
     if request.method == 'GET':
         movies = getMoviesInTheatersFromLocal()
         print("Movie data retrived from local.")
     else:
         movies = getMoviesInTheatersFromAPI()
+        calldate = datetime.now().strftime('%A, %d %b %Y %l:%M %p')
         print("API Called. Movie data retrived from API.")
-    return render_template('intheaters.html', movies=movies, number=len(movies))
+    return render_template('intheaters.html', movies=movies, calldate=calldate, number=len(movies))
+
+@app.route("/addmovie", methods= ["GET", "POST"])
+def addToWatchList():
+    if request.method == "POST":
+        title = request.form.get('title')
+        print('Get Title: ' + str(title))
+        addMovie(title)
+    return redirect('/intheaters')
+
 
 @app.route("/search")
-def function2():
+def search():
     return render_template('search.html')
 
-@app.route("/mywatchlist")
+@app.route("/mywatchlist", methods = ["GET", "POST"])
 def mywatchlist():
-    return render_template('mywatchlist.html')
+    if request.method == 'GET':
+        movies = getWatchList()
+        return render_template('mywatchlist.html', movies=movies)
+    else:
+        title = request.form.get('title')
+        removeMovie(title)
+        return redirect('/mywatchlist')
+
 
 @app.route("/message", methods=["GET", "POST"])
 def error():

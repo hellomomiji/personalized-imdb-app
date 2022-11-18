@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block title %}
-    Current In Theathers
+    Current In Theaters
 {% endblock %}
 
 {% block main %}
@@ -13,7 +13,12 @@
     {% else %}
     <h3>Currently {{ number }} movies in Theathers!</h3>
     {% endif %}
-    <form action="/intheaters" method="post" > <button class="btn btn-dark">Refresh</button></form>
+    <div class="text-muted" style="text-align: right; font-size: small;">
+      Last updated: {{ calldate }}
+    </div> 
+      <form action="/intheaters" method="post"> 
+        <button class="btn btn-dark">Refresh</button> 
+      </form>
   </div>
 
   <!-- Movies -->
@@ -30,8 +35,13 @@
             <p class="card-text">Runtime: {{ movie['runtime'] }} | Genres: {{ movie['genres'] }} | Directors: {{ movie['directors'] }}</p>
             <p class="card-text">Stars: {{ movie['stars'] }} </p>
             <p class="card-text">Plot: {{ movie['plot'] }}</p>
-            <p class="card-text"></p>
           </div>
+          <form action="/addmovie" method="post">
+            <div class="card-body action">
+            <a href="http://"><button class="btn btn-light" >View Trailer <i class="fas fa-external-link-alt"></i></button></a>
+              <input type="hidden" name="title" value="{{ movie['title'] }}"><button type="submit" class="btn btn-light" >Add to Watchlist</button>
+            </div>
+            </form>
         </div>
       </div>
     </div>

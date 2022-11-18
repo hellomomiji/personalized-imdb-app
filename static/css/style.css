@@ -13,6 +13,26 @@ body {
 
 p {
     color: #8f8f8f;
+    padding: 5px;
+}
+
+th {
+    color: #8f8f8f;
+    font-family: 'Montserrat', sans-serif; 
+    font-weight: normal;
+}
+input {
+    margin: 5px;
+}
+
+.t-header {
+    color: #000000;
+    font-weight: bold;
+}
+
+.small-img {
+    width: 80px;
+    height: 120px; 
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -77,6 +97,13 @@ a:hover {
 .card {
     text-align: left;
     padding-left: 0;
+}
+.card-text {
+    margin: 0;
+}
+
+.card-body {
+    padding: 0.5rem;
 }
 
 .card-img {
