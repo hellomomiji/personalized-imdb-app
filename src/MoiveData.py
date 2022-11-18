@@ -3,6 +3,7 @@ from datetime import datetime
 import requests
 import json
 from src.db import get_db
+from src.apicalltime import recordApiCallTime, getApiCallTime
 
 # exampleMovie = {
 #                 'title': 'Black Adam (2022)', 
@@ -15,20 +16,20 @@ from src.db import get_db
 #                 'directors': 'Jaume Collet-Serra', 
 #                 'stars': 'Dwayne Johnson, Aldis Hodge, Pierce Brosnan, Noah Centineo'}
 
+# Connect db
+con = get_db()
+cur = con.cursor()
+
 def getMoviesInTheatersFromAPI():
     # Call API
     url = "https://imdb-api.com/en/API/InTheaters/k_26vizq0b" # This is a personal API key, should be masked if open to public!!
     response = requests.request("GET", url)
     movies = response.json()["items"]
-    
-    # Connect db
-    con = get_db()
-    cur = con.cursor()
+    recordApiCallTime('intheaters')
     
     # Update movie not in theathers - retrive last call data
     lastCall = cur.execute('SELECT * FROM movies WHERE intheaters IS 1').fetchall()
     lastCallMovieTitles = [item['title'] for item in lastCall]
-    print(lastCallMovieTitles)
     thisCallMovieTitles = set()
     
     # add movie data to db if movie in theater not in db
@@ -42,7 +43,6 @@ def getMoviesInTheatersFromAPI():
                         'VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', 
                         (item['title'], item['plot'], item['image'], item['year'], item['releaseState'], item['runtimeStr'], item["imDbRating"],item["genres"], item["directors"],item["stars"], 1))
 
-    print(thisCallMovieTitles)
     # Update movie not in theaters - check titles and update db
     for title in lastCallMovieTitles:
         if title not in thisCallMovieTitles:
@@ -55,13 +55,35 @@ def getMoviesInTheatersFromAPI():
     return intheaters
 
 def getMoviesInTheatersFromLocal():
-    con = get_db()
-    cur = con.cursor()
     intheaters = cur.execute("SELECT * FROM movies WHERE intheaters = 1").fetchall()
     print(len(intheaters))
     return intheaters
     
      
+def searchMovie(keyword):
+    # Call API
+    url = "https://imdb-api.com/en/API/SearchMovie/k_26vizq0b/" + keyword
+    response = requests.request("GET", url)
+    jsonData = response.json()["results"]
+    print("Called search API.")
+    
+    for item in jsonData:
+        # check wheather already in db
+        query = cur.execute('SELECT * FROM movies WHERE title = ?', [item['title']]).fetchone()
+        if not query:
+            cur.execute('INSERT INTO movies '
+                        '(title, image, releaseYear, rating, intheaters) '
+                        'VALUES (?, ?, ?, ?, ?)', 
+                        (item['title'], item['image'], item['description'][1:5], "NA" , 0))
+            con.commit()
+    results = cur.execute('SELECT * FROM movies WHERE title LIKE ?', ['%' +keyword + '%']).fetchall()
+    return results
+     
+def getTopRatedMovies():
+    movies = cur.execute('SELECT * FROM movies WHERE cast(rating as float) > 7 ORDER BY RANDOM() LIMIT 10').fetchall() 
+    return movies
+    
+    
 '''
    json file format
    { "items":[

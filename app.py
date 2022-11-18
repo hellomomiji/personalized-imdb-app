@@ -4,9 +4,10 @@ from flask_session import Session
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from src.message import render_error, success
-from src.moiveData import getMoviesInTheatersFromAPI, getMoviesInTheatersFromLocal
+from src.moiveData import getMoviesInTheatersFromAPI, getMoviesInTheatersFromLocal, searchMovie, getTopRatedMovies
 from src.db import get_db
 from src.watchlist import getWatchList, addMovie, removeMovie
+from src.apicalltime import recordApiCallTime, getApiCallTime
 
 
 app = Flask(__name__)
@@ -69,7 +70,8 @@ def index():
     if 'user' in session and session['user']:
         now = datetime.now().strftime('%A, %d %b %Y %l:%M %p')
         welcomeMessage = "Welcome, " + session['user']
-        return render_template('index.html', welcomeMessage=welcomeMessage, now=now)
+        movies = getTopRatedMovies()
+        return render_template('index.html', welcomeMessage=welcomeMessage, now=now, movies=movies)
     else:
         return redirect('/login')
 
@@ -82,14 +84,14 @@ def logout():
 
 @app.route("/intheaters", methods = ['GET','POST'])
 def intheaters():
-    calldate = None
     if request.method == 'GET':
         movies = getMoviesInTheatersFromLocal()
         print("Movie data retrived from local.")
     else:
         movies = getMoviesInTheatersFromAPI()
-        calldate = datetime.now().strftime('%A, %d %b %Y %l:%M %p')
         print("API Called. Movie data retrived from API.")
+    calldate = getApiCallTime('intheaters')
+    print(calldate)
     return render_template('intheaters.html', movies=movies, calldate=calldate, number=len(movies))
 
 @app.route("/addmovie", methods= ["GET", "POST"])
@@ -98,12 +100,21 @@ def addToWatchList():
         title = request.form.get('title')
         print('Get Title: ' + str(title))
         addMovie(title)
-    return redirect('/intheaters')
+    return redirect('/')
 
 
-@app.route("/search")
+@app.route("/search", methods=["GET", "POST"])
 def search():
-    return render_template('search.html')
+    if request.method == 'GET':
+        return render_template('search.html')
+    else:
+        keyword = request.form.get('keyword')
+        movies = searchMovie(keyword)
+        print(len(movies))
+        return render_template('search.html', number=len(movies), movies=movies)
+        
+        
+        
 
 @app.route("/mywatchlist", methods = ["GET", "POST"])
 def mywatchlist():

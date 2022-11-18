@@ -6,7 +6,42 @@
 
 {% block main %}
 
-<h1>{{ welcomeMessage }}</h1>
-<h3>It is currently {{ now }}.</h3>
+<div class="row">
+    <h1>{{ welcomeMessage }}</h1>
+    <h3>It is currently {{ now }}.</h3>
+</div>
 
+<div class="row">
+    <h4>Don't know what to watch today?<br>
+    Here are some Top Rated Movies!</h4>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col" class="t-header">Poster</th>
+                <th scope="col" class="t-header">Title</th>
+                <th scope="col" class="t-header">Year</th>
+                <th scope="col" class="t-header">Runtime</th>
+                <th scope="col" class="t-header">Rating</th>
+                <th scope="col" class="t-header"></th>
+            </tr>
+        </thead>
+        <tbody class="tbody">
+            {% for movie in movies %}
+            <tr>
+                <th><img class="small-img" src="{{ movie['image'] }}" alt="{{ movie['title'] }}"></th>
+                <th>{{ movie['title'] }}</th>
+                <th>{{ movie['releaseYear'] }}</th>
+                <th>{{ movie['runtime'] }}</th>
+                <th>{{ movie['rating'] }}</th>
+                <form action="/addmovie" method="post">
+                    <input type="hidden" name="title" value="{{ movie['title'] }}">                
+                    <th><button type="submit" class="btn btn-outline-dark ">Add to Watchlist</button></th>
+                </form>
+            </tr>
+            {% endfor %}
+        </tbody>
+    
+    </table>
+</div>
 {% endblock %}

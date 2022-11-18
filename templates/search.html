@@ -6,8 +6,38 @@
 
 {% block main %}
 
-<h3>Please enter Movie title to search:</h3>
-<form action="/search" method="post">
-    <p><input type="text" name="title"><button class="btn btn-dark" type="submit">Search</button></p>
-</form>
+    <h3>Please enter keyword to search:</h3>
+    <form action="/search" method="post">
+        <p>
+            <input type="text" name="keyword" placeholder="Keyword" autofocus>
+            <button class="btn btn-dark" type="submit">Search</button>
+        </p>
+    </form>
+{% if request.method == "POST" %}
+    <p>{{ number }} movies found.</p>
+
+    {% for movie in movies %}
+    <div class="card mb-3">
+      <div class="row g-0">
+        <div class="col-md-3">
+          <img src="{{ movie['image'] }}" class="card-img" alt="{{ movie['title'] }}">
+        </div>
+        <div class="col-md-9">
+          <div class="card-body">
+            <h5 class="card-title">{{ movie['title'] }}</h5>
+            <p class="card-text">Release Year: {{ movie['releaseYear'] }}</p>
+          </div>
+          <form action="/addmovie" method="post">
+            <div class="card-body action">
+            <a href="http://"><button class="btn btn-light" >View Trailer <i class="fas fa-external-link-alt"></i></button></a>
+              <input type="hidden" name="title" value="{{ movie['title'] }}"><button type="submit" class="btn btn-light" >Add to Watchlist</button>
+            </div>
+            </form>
+        </div>
+      </div>
+    </div>
+
+    {% endfor %}
+
+{% endif %}
 {% endblock %}

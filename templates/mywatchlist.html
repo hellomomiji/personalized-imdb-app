@@ -30,7 +30,7 @@
             <th>{{ movie['releaseYear'] }}</th>
             <th>{{ movie['runtime'] }}</th>
             <th>{{ movie['rating'] }}</th>
-            <form action="" method="post">
+            <form action="/mywatchlist" method="post">
                 <input type="hidden" name="title" value="{{ movie['title'] }}">                
                 <th><button type="submit" class="btn btn-outline-dark ">Remove</button></th>
             </form>
