@@ -9,3 +9,6 @@ fig/*
 **/__pycache__
 **/.DS_Store
 .coverage
+.env
+api_key.py
+test.py

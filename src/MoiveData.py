@@ -4,6 +4,7 @@ import requests
 import json
 from src.db import get_db
 from src.apicalltime import recordApiCallTime, getApiCallTime
+from src.api_key import get_intheaters_api_url, get_movie_search_api_url
 
 # exampleMovie = {
 #                 'title': 'Black Adam (2022)', 
@@ -22,7 +23,7 @@ cur = con.cursor()
 
 def getMoviesInTheatersFromAPI():
     # Call API
-    url = "https://imdb-api.com/en/API/InTheaters/k_26vizq0b" # This is a personal API key, should be masked if open to public!!
+    url =  get_intheaters_api_url()
     response = requests.request("GET", url)
     movies = response.json()["items"]
     recordApiCallTime('intheaters')
@@ -46,7 +47,7 @@ def getMoviesInTheatersFromAPI():
     # Update movie not in theaters - check titles and update db
     for title in lastCallMovieTitles:
         if title not in thisCallMovieTitles:
-            cur.execute('UPDATE movies SET inteaters = 0 WHERE title = ?', [title])
+            cur.execute('UPDATE movies SET intheaters = 0 WHERE title = ?', [title])
             print(title + 'removed from intheaters page.')
             
     # return movies in theaters
@@ -62,7 +63,7 @@ def getMoviesInTheatersFromLocal():
      
 def searchMovie(keyword):
     # Call API
-    url = "https://imdb-api.com/en/API/SearchMovie/k_26vizq0b/" + keyword
+    url = get_movie_search_api_url() + keyword
     response = requests.request("GET", url)
     jsonData = response.json()["results"]
     print("Called search API.")
