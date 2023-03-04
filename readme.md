@@ -8,7 +8,7 @@ with functions of:
 - Get latest movies in theathers (by calling IMDb API),
 - Search movies by keyword (by calling IMDb API),
 - Add favorite movies to personal watchlist, or remove movies from personal watchlist.
-- (TBD) Watch trailers on Youtube(by calling YouTube API)
+- (WIP) Watch trailers on Youtube(by calling YouTube API)
 
 ## Functions
 ### User register, login, logout
