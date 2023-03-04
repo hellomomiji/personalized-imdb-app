@@ -1,7 +1,7 @@
 # A Simple IMDB App
 
 ## Summary
-A simple IMDB information App bulit by Python flask, sqlite3,css(bootstrap), html(jinja2) and IMDb-API,
+A simple personalized IMDB information App bulit by Python flask, sqlite3,css(bootstrap), html(jinja2) and IMDb-API,
 with functions of:
 - user register, login and logout,
 - Randomly show today's movie recommendation from IMDB 250 database on the homepage,
